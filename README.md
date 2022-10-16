@@ -5,6 +5,9 @@
 
 Administration privileges granter for Discord
 
+You can grant administrator permission to a specific user, if you don't have it but your bot have it.
+For example, it is useful if the owner of a guild with @everyone with administrator permission lose access to his/her account
+
 ## How to install
 ```
 git clone https://github.com/mtripg6666tdr/gedmin.git
