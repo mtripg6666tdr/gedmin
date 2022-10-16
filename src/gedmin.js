@@ -11,6 +11,7 @@ program
   .option("-t, --token <token>", "token in a process of granting")
   .option("-c, --forcenew", "Force creating new role")
   .option("-n, --name <name>", "The name of a role the bot creates newly")
+  .option("-d, --dothebest", "Grant a new role with all permissions I can grant if I don't have an administrator privilege")
   .showHelpAfterError()
   .parse(process.argv);
 
@@ -81,8 +82,40 @@ if(!opts.userid || !opts.token || !opts.guildid) {
           client.destroy();
           process.exit(1);
         })
+      }else if(opts.dothebest){
+        console.error("The bot does not have enough permission in this server; trying to grant all permissions I can");
+        guild.roles.create({
+          data: {
+            name: opts.name ?? "new role",  
+            hoist: false
+          }
+        }).then((role)=>{
+          role.setPermissions(guild.me.permissions.bitfield);
+          role.setPosition(guild.me.roles.highest.position - 1)
+          guild.members.fetch(opts.userid).then(member => {
+            member.roles.add(role).then(()=>{
+              console.log("Successfully granted the role named: " + role.name);
+              client.destroy();
+              process.exit(0);
+            }).catch(e => {
+              console.error("Some error occurred while adding the role: " + e);
+              client.destroy();
+              process.exit(1);
+            })
+          }).catch(e => {
+            console.error("Some error occurred while fetching the specified user in the specified server:" + e);
+            client.destroy();
+            process.exit(1);
+          })
+        }).catch(e => {
+          console.error("Some error occurred while creating a new role" + e);
+          client.destroy();
+          process.exit(1);
+        });
       }else{
         console.error("The bot does not have enough permission in this server");
+        client.destroy();
+        process.exit(1);
       }
     }).catch(e => {
       console.error("Some error occurred while fetching the specified server: " + e);
