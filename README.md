@@ -1,5 +1,8 @@
 # gedmin
 
+> :warning: Caution!  
+> Please note that this project was created from my shallow idea and is very sloppy; all code in this project is so extremely dirty and dirty that it is impossible to read.
+
 Administration privileges granter for Discord
 
 ## How to install
